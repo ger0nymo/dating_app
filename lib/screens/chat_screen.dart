@@ -124,6 +124,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 itemBuilder: (context, index) {
                   List keys = messages.keys.toList();
                   keys.sort();
+                  keys = keys.reversed.toList();
                   return Container(
                     child: Row(
                       mainAxisAlignment: messages[keys[index]]['sender'] ==
