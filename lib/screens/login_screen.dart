@@ -42,6 +42,15 @@ class _LoginScreenState extends State<LoginScreen> {
           'uid': user.uid,
           'displayName': user.displayName!,
           'email': user.email!,
+          'interests': {
+            'Chess': false,
+            'Hanging out': false,
+            'Movies': false,
+            'Hiking': false,
+            'Parties': false,
+            'Video games': false
+          },
+          'swipes': {},
           'pictures': [user.photoURL!],
         });
       }

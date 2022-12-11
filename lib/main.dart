@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
                         pictures: [user.photoURL!],
                         description: snapshot.data!['description'] ?? '',
                         interests: snapshot.data!['interests'] ?? {},
-                        age: snapshot.data!['age'],
+                        age: snapshot.data!['age'] ?? 0,
                       ));
                       if (snapshot.data!.keys.contains('description')) {
                         return HomePage();

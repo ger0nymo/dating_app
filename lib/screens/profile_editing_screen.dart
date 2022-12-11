@@ -34,15 +34,6 @@ class _ProfileEditingScreenState extends State<ProfileEditingScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
-  Map<String, bool> _options = {
-    'Chess': false,
-    'LoL': false,
-    'Hanging out': false,
-    'Movies': false,
-    'Parties': false,
-    'CS:GO': false
-  };
-
   Future<void> _pickProfilePicture(String uid) async {
     final pickedImage = await _picker.getImage(source: ImageSource.gallery);
     if (pickedImage != null) {
@@ -54,9 +45,8 @@ class _ProfileEditingScreenState extends State<ProfileEditingScreen> {
       final uploadTask = storageRef
           .child("users/$uid/profilePicture")
           .putFile(File(pickedImage.path));
-      final downloadUrl =
-          await storageRef.child("users/$uid/profilePicture").getDownloadURL();
-      uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
+
+      uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) async {
         switch (taskSnapshot.state) {
           case TaskState.running:
             _uploadState = UploadState.uploading;
@@ -82,6 +72,9 @@ class _ProfileEditingScreenState extends State<ProfileEditingScreen> {
             setState(() {
               _uploadState = UploadState.done;
             });
+            final downloadUrl = await storageRef
+                .child("users/$uid/profilePicture")
+                .getDownloadURL();
             FirebaseFirestore.instance.collection('users').doc(uid).update({
               'pictures': [downloadUrl]
             });
@@ -91,13 +84,20 @@ class _ProfileEditingScreenState extends State<ProfileEditingScreen> {
     }
   }
 
+  bool hasRendered = false;
+
   @override
   Widget build(BuildContext context) {
     final userData = Provider.of<UserData>(context);
-    _nameController.text = userData.user.displayName;
-    _ageController.text = userData.user.age.toString();
-    _descriptionController.text = userData.user.description;
-    print("fasz: " + userData.user.age.toString());
+    if (!hasRendered) {
+      _nameController.text = userData.user.displayName;
+      _ageController.text = userData.user.age.toString();
+      _descriptionController.text = userData.user.description;
+      setState(() {
+        hasRendered = true;
+      });
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Container(
